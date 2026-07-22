@@ -3,16 +3,20 @@ Step 1 del progetto parallelo (vector tiles).
 
 Calcola, per le 50 sezioni critiche di Milano (stesso input del progetto
 principale: top50_sezioni_critiche_milano.geojson), l'insieme MINIMO e
-DEDUPLICATO di tile TomTom (zoom 13) necessari a coprire tutte le sezioni.
-Un singolo tile a zoom 13 copre circa 4-5 km di lato a questa latitudine:
-sufficiente a contenere quasi sempre l'intera sezione in 1-2 tile, con
-buona varieta' di tipi di strada (secondarie, locali, connettori).
+DEDUPLICATO di tile TomTom (zoom 15) necessari a coprire tutte le sezioni.
+Un singolo tile a zoom 15 copre circa 1 km di lato a questa latitudine:
+risoluzione piu' fine di zoom 13, con segmenti stradali piu' precisi.
 
 A differenza dell'approccio a candidati puntuali (progetto principale,
 3 chiamate/sezione), qui si scarica un tile per area: 50 sezioni sparse
-richiedono solo ~27 tile totali (deduplicati), MENO chiamate a parita' di
-copertura, e la copertura e' COMPLETA (tutti i segmenti stradali nel
-tile) invece che campionata su pochi punti.
+richiedono solo ~63 tile totali (deduplicati) a zoom 15 - comunque MENO
+chiamate del progetto a candidati (150), con copertura COMPLETA (tutti i
+segmenti stradali nel tile) invece che campionata su pochi punti. La
+quota mensile di questa API (200.000/mese) lascia ampio margine per
+usare uno zoom piu' alto (piu' dettaglio) senza avvicinarsi al limite,
+a differenza del progetto a candidati (20.000/mese) dove la cadenza
+oraria va tenuta identica per garantire un confronto equo tra i due
+metodi.
 
 Output: tile_necessari.csv (colonne: tile_x, tile_y, zoom) e
         sezione_tile.csv (SEZ2011 -> tile_x, tile_y, zoom; una sezione
@@ -30,7 +34,7 @@ IN_GEOJSON = CARTELLA_SCRIPT / "top50_sezioni_critiche_milano.geojson"
 OUT_TILE = CARTELLA_SCRIPT / "tile_necessari.csv"
 OUT_MAPPA = CARTELLA_SCRIPT / "sezione_tile.csv"
 
-ZOOM = 13
+ZOOM = 15
 
 
 def lonlat_to_tile(lon, lat, zoom):

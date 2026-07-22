@@ -5,10 +5,13 @@ name: Monitoraggio traffico Milano (vector tiles)
 # italiana estiva, CEST). In orario solare (CET, ottobre-marzo) va
 # aggiornato manualmente in "6-21". Lo script salta la chiamata (nessuna
 # richiesta TomTom) se l'ora UTC corrente e' gia' coperta da una lettura
-# precedente: qui il costo e' comunque molto piu' basso, 27 chiamate per
+# precedente: qui il costo e' comunque molto piu' basso, 63 chiamate per
 # ogni ora effettivamente coperta (contro le 150 del progetto a candidati
 # puntuali), perche' un tile copre l'intera rete stradale dell'area
-# invece di un singolo punto.
+# invece di un singolo punto. Zoom 15 (piu' fine di zoom 13) scelto
+# perche' la quota mensile di questa API (200.000/mese) lascia ampio
+# margine anche a risoluzione piu' alta: a piena cadenza (16 ore/giorno)
+# si resta comunque a ~30.000/mese.
 on:
   schedule:
     - cron: "*/15 5-20 * * *"
@@ -34,7 +37,7 @@ jobs:
       - name: Installa dipendenze
         run: pip install pandas requests geopandas shapely mapbox-vector-tile
 
-      - name: Esegui monitoraggio traffico (27 tile)
+      - name: Esegui monitoraggio traffico (63 tile)
         env:
           TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
         run: python SCRIPT/02_monitoraggio_traffico_tile.py

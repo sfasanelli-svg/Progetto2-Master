@@ -1,8 +1,8 @@
 """
 Step 2 del progetto parallelo (vector tiles) - script principale.
 
-Scarica i 27 tile TomTom (Traffic Flow Vector Tile, stile "relative",
-zoom 13) necessari a coprire le 50 sezioni critiche di Milano, decodifica
+Scarica i 63 tile TomTom (Traffic Flow Vector Tile, stile "relative",
+zoom 15) necessari a coprire le 50 sezioni critiche di Milano, decodifica
 ciascun tile (formato Mapbox Vector Tile / protobuf) e ne estrae TUTTI i
 segmenti stradali con il relativo rapporto di congestione. Per ogni
 segmento si verifica poi a quale sezione appartiene (il segmento deve
@@ -23,8 +23,9 @@ puntuale): congestione = 1 - traffic_level.
 Stessa logica di resilienza del progetto principale: se l'ora UTC
 corrente e' gia' coperta da una lettura precedente, lo script esce senza
 fare alcuna chiamata (pensato per essere lanciato ogni 15 minuti da
-GitHub Actions, con margine molto piu' ampio: 27 chiamate/esecuzione
-invece di 150).
+GitHub Actions, con margine molto piu' ampio: 63 chiamate/esecuzione
+invece di 150, e quota mensile 10 volte piu' alta: 200.000 contro
+20.000).
 
 API key TomTom:
   1. variabile d'ambiente TOMTOM_API_KEY (GitHub Actions, via secret);
