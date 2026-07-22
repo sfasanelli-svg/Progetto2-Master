@@ -1,0 +1,4 @@
+# chiave API TomTom: mai in chiaro nel repo, si usa il secret GitHub Actions
+SCRIPT/tomtom_key.txt
+
+__pycache__/

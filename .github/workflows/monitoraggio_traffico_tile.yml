@@ -1,0 +1,53 @@
+name: Monitoraggio traffico Milano (vector tiles)
+
+# Stessa logica di resilienza del progetto principale (Progetto-Master):
+# un TENTATIVO ogni 15 minuti dalle 05:00 alle 20:00 UTC (7:00-22:00 ora
+# italiana estiva, CEST). In orario solare (CET, ottobre-marzo) va
+# aggiornato manualmente in "6-21". Lo script salta la chiamata (nessuna
+# richiesta TomTom) se l'ora UTC corrente e' gia' coperta da una lettura
+# precedente: qui il costo e' comunque molto piu' basso, 27 chiamate per
+# ogni ora effettivamente coperta (contro le 150 del progetto a candidati
+# puntuali), perche' un tile copre l'intera rete stradale dell'area
+# invece di un singolo punto.
+on:
+  schedule:
+    - cron: "*/15 5-20 * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  group: monitoraggio-traffico-milano-tile
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  monitoraggio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Installa dipendenze
+        run: pip install pandas requests geopandas shapely mapbox-vector-tile
+
+      - name: Esegui monitoraggio traffico (27 tile)
+        env:
+          TOMTOM_API_KEY: ${{ secrets.TOMTOM_API_KEY }}
+        run: python SCRIPT/02_monitoraggio_traffico_tile.py
+
+      - name: Commit e push del CSV aggiornato
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add SCRIPT/traffico_tile_serie_storica_milano.csv
+          if git diff --staged --quiet; then
+            echo "Nessuna nuova riga da salvare"
+          else
+            git commit -m "Aggiorna serie storica traffico (tile) $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            git pull --rebase
+            git push
+          fi
