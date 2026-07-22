@@ -1,20 +1,28 @@
 name: Monitoraggio traffico Milano (vector tiles)
 
 # Stessa logica di resilienza del progetto principale (Progetto-Master):
-# un TENTATIVO ogni 15 minuti dalle 05:00 alle 20:00 UTC (7:00-22:00 ora
-# italiana estiva, CEST). In orario solare (CET, ottobre-marzo) va
-# aggiornato manualmente in "6-21". Lo script salta la chiamata (nessuna
-# richiesta TomTom) se l'ora UTC corrente e' gia' coperta da una lettura
-# precedente: qui il costo e' comunque molto piu' basso, 63 chiamate per
-# ogni ora effettivamente coperta (contro le 150 del progetto a candidati
-# puntuali), perche' un tile copre l'intera rete stradale dell'area
-# invece di un singolo punto. Zoom 15 (piu' fine di zoom 13) scelto
-# perche' la quota mensile di questa API (200.000/mese) lascia ampio
-# margine anche a risoluzione piu' alta: a piena cadenza (16 ore/giorno)
-# si resta comunque a ~30.000/mese.
+# un TENTATIVO ogni 5 minuti (il minimo supportato da GitHub Actions)
+# dalle 05:00 alle 20:00 UTC (7:00-22:00 ora italiana estiva, CEST). In
+# orario solare (CET, ottobre-marzo) va aggiornato manualmente in
+# "6-21". Piu' tentativi ravvicinati riducono il rischio di perdere la
+# copertura di un'ora intera nei momenti di alto carico di GitHub
+# (l'inizio di ogni ora, per definizione di GitHub stessa). Lo script
+# salta la chiamata (nessuna richiesta TomTom) se l'ora UTC corrente e'
+# gia' coperta da una lettura precedente: qui il costo e' comunque molto
+# piu' basso, 63 chiamate per ogni ora effettivamente coperta (contro le
+# 150 del progetto a candidati puntuali), perche' un tile copre l'intera
+# rete stradale dell'area invece di un singolo punto. Zoom 15 (piu' fine
+# di zoom 13) scelto perche' la quota mensile di questa API
+# (200.000/mese) lascia ampio margine anche a risoluzione piu' alta: a
+# piena cadenza (16 ore/giorno) si resta comunque a ~30.000/mese.
+#
+# La cadenza dei TENTATIVI (ogni 5 minuti) e' identica al progetto
+# principale per mantenere equo il confronto tra i due metodi: cambia
+# solo quante volte si prova a coprire ciascuna ora, non l'obiettivo
+# (1 esecuzione reale per ora, in entrambi i progetti).
 on:
   schedule:
-    - cron: "*/15 5-20 * * *"
+    - cron: "*/5 5-20 * * *"
   workflow_dispatch: {}
 
 concurrency:
