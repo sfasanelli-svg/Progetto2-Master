@@ -20,12 +20,15 @@ Nel campo "relative" di TomTom, traffic_level e' gia' il rapporto
 currentSpeed/freeFlowSpeed (verificato incrociando con l'endpoint
 puntuale): congestione = 1 - traffic_level.
 
-Stessa logica di resilienza del progetto principale: se l'ora UTC
-corrente e' gia' coperta da una lettura precedente, lo script esce senza
-fare alcuna chiamata (pensato per essere lanciato ogni 15 minuti da
-GitHub Actions, con margine molto piu' ampio: 63 chiamate/esecuzione
-invece di 150, e quota mensile 10 volte piu' alta: 200.000 contro
-20.000).
+Il trigger arriva da un cron esterno (cron-job.org, che chiama l'API
+GitHub per lanciare il workflow: piu' affidabile dello scheduler interno
+di GitHub Actions per cadenze fitte). Se l'ultima riga del CSV di output
+cade gia' nello stesso intervallo di INTERVALLO_MINUTI di quello
+corrente, lo script esce senza fare alcuna chiamata. Margine di quota
+molto piu' ampio del progetto a candidati (63 chiamate/esecuzione contro
+150, quota mensile 200.000 contro 20.000): per una raccolta intensiva di
+pochi giorni si puo' quindi permettere un intervallo piu' fitto (5
+minuti) senza rischiare di esaurire la quota.
 
 API key TomTom:
   1. variabile d'ambiente TOMTOM_API_KEY (GitHub Actions, via secret);
@@ -57,6 +60,7 @@ KEY_PATH = CARTELLA_SCRIPT / "tomtom_key.txt"
 TOMTOM_TILE_URL = "https://api.tomtom.com/traffic/map/4/tile/flow/relative/{zoom}/{x}/{y}.pbf"
 PAUSA_TRA_RICHIESTE_S = 0.3
 BUFFER_SEZIONE_METRI = 50
+INTERVALLO_MINUTI = 5  # granularita' del controllo "gia' coperto"
 
 CRS_WGS84 = "EPSG:4326"
 CRS_UTM = "EPSG:32632"
@@ -69,16 +73,34 @@ def leggi_api_key():
     return KEY_PATH.read_text(encoding="utf-8").strip()
 
 
-def ora_gia_coperta(out_path, ora_utc_corrente):
+def bucket(dt, intervallo_minuti):
+    """Chiave dell'intervallo temporale (data, ora, minuto arrotondato
+    per difetto a multipli di intervallo_minuti) a cui appartiene dt."""
+    minuto_arrotondato = (dt.minute // intervallo_minuti) * intervallo_minuti
+    return (dt.date(), dt.hour, minuto_arrotondato)
+
+
+def intervallo_gia_coperto(out_path, adesso, intervallo_minuti):
+    """True se l'ultima riga del CSV di output cade nello stesso
+    intervallo temporale (bucket) di 'adesso'."""
     if not out_path.exists():
         return False
-    prefisso_ora = ora_utc_corrente.strftime("%Y-%m-%dT%H")
-    with open(out_path, encoding="utf-8") as f:
-        next(f, None)
-        for riga in f:
-            if riga.startswith(prefisso_ora):
-                return True
-    return False
+    with open(out_path, "rb") as f:
+        f.seek(0, 2)
+        dimensione = f.tell()
+        if dimensione == 0:
+            return False
+        blocco = min(dimensione, 4096)
+        f.seek(-blocco, 2)
+        ultime_righe = f.read().decode("utf-8", errors="ignore").strip().splitlines()
+    if not ultime_righe:
+        return False
+    ultimo_timestamp = ultime_righe[-1].split(",", 1)[0]
+    try:
+        ultimo_dt = datetime.fromisoformat(ultimo_timestamp)
+    except ValueError:
+        return False
+    return bucket(ultimo_dt, intervallo_minuti) == bucket(adesso, intervallo_minuti)
 
 
 def tile_px_to_lonlat(x_tile, y_tile, zoom, px, py, extent):
@@ -147,9 +169,10 @@ def estrai_segmenti_lonlat(tile_decodificato, x, y, zoom):
 def main(forza=False):
     ora_corrente = datetime.now(timezone.utc)
 
-    if not forza and ora_gia_coperta(OUT_CSV, ora_corrente):
-        print(f"Ora UTC {ora_corrente.strftime('%Y-%m-%dT%H')} gia' coperta da "
-              f"un'esecuzione precedente: nessuna chiamata TomTom, esco.")
+    if not forza and intervallo_gia_coperto(OUT_CSV, ora_corrente, INTERVALLO_MINUTI):
+        print(f"Intervallo di {INTERVALLO_MINUTI} minuti gia' coperto da "
+              f"un'esecuzione precedente ({ora_corrente.isoformat(timespec='minutes')}): "
+              f"nessuna chiamata TomTom, esco.")
         return
 
     api_key = leggi_api_key()
