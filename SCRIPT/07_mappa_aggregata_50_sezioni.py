@@ -79,7 +79,8 @@ def calcola_congestione_per_sezione():
 
 def disegna_mappa_aggregata(gdf, colonna, cmap_name, vmin, vmax, etichetta_colorbar,
                              titolo, sottotitolo_top1, formato_valore, nota_footer, out_path,
-                             colonna_dati_mancanti=None, etichetta_dati_mancanti=None):
+                             colonna_dati_mancanti=None, etichetta_dati_mancanti=None,
+                             colonna_tie_break=None):
     """Disegna una mappa d'insieme delle sezioni in gdf (EPSG:3857, con colonna
     'centroid_lon'/'centroid_lat' gia' proiettate in geometry), colorate per
     'colonna', con la prima in classifica evidenziata e le prossime
@@ -92,7 +93,13 @@ def disegna_mappa_aggregata(gdf, colonna, cmap_name, vmin, vmax, etichetta_color
     gdf_ok = gdf[~mancanti]
     gdf_ko = gdf[mancanti]
 
-    classifica = gdf[~mancanti].sort_values(colonna, ascending=False)
+    # a parita' di valore il tie-break e' colonna_tie_break (tipicamente il numero
+    # di segmenti robusti a supporto): niente scelte arbitrarie legate all'ordine
+    # dei dati, vedi anche 03/04/05/06
+    if colonna_tie_break:
+        classifica = gdf[~mancanti].sort_values([colonna, colonna_tie_break], ascending=[False, False])
+    else:
+        classifica = gdf[~mancanti].sort_values(colonna, ascending=False)
     top_n = classifica.head(N_ETICHETTE)
     riga_top1 = top_n.iloc[0]
 
@@ -223,6 +230,7 @@ def main():
         nota_footer=f"50 sezioni · dati dal {inizio.strftime('%d/%m %H:%M')} "
                      f"al {fine.strftime('%d/%m %H:%M UTC')}{nota_bozza}",
         out_path=CARTELLA_SCRIPT / "mappa_aggregata_50_sezioni_congestione_milano.png",
+        colonna_tie_break="n_segmenti_robusti",
         colonna_dati_mancanti="congestione_max",
         etichetta_dati_mancanti="dati insufficienti (nessun segmento robusto)",
     )

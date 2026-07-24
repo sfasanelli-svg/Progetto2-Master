@@ -61,8 +61,11 @@ def main():
     per_segmento = sez.groupby(["lat_r", "lon_r", "road_type"]).agg(
         congestione_max=("congestione", "max"), n_letture=("congestione", "size")
     ).reset_index()
+    # a parita' di congestione massima il tie-break e' il numero di letture (il
+    # segmento con piu' osservazioni a supporto e' il dato piu' affidabile), non
+    # l'ordine arbitrario del groupby - vedi anche 03/05/06
     robusti = per_segmento[per_segmento["n_letture"] >= MIN_LETTURE].sort_values(
-        "congestione_max", ascending=False)
+        ["congestione_max", "n_letture"], ascending=[False, False])
     non_robusti = per_segmento[per_segmento["n_letture"] < MIN_LETTURE]
     if robusti.empty:
         raise ValueError(f"Nessun segmento robusto per SEZ2011={SEZ_ESEMPIO}, serve piu' tempo di raccolta")

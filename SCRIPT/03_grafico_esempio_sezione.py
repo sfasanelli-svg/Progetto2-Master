@@ -60,8 +60,12 @@ def main():
         congestione_max=("congestione", "max"), n_letture=("congestione", "size")
     ).reset_index()
 
+    # a parita' di congestione massima (es. due segmenti consecutivi della stessa
+    # strada entrambi fermi a 1.0), il tie-break e' il numero di letture: il
+    # segmento con piu' osservazioni a supporto e' il dato piu' affidabile, non
+    # semplicemente il primo capitato nell'ordine (arbitrario) del groupby
     robusti = per_segmento[per_segmento["n_letture"] >= MIN_LETTURE].sort_values(
-        "congestione_max", ascending=False)
+        ["congestione_max", "n_letture"], ascending=[False, False])
     non_robusti = per_segmento[per_segmento["n_letture"] < MIN_LETTURE]
     if robusti.empty:
         raise ValueError(
