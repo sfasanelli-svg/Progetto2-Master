@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>pydeck</title>
+        <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.14.0/dist/maplibre-gl.css" />
+    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~9.3.*/dist/index.js'></script>
+    <link rel="stylesheet" href=https://cdn.jsdelivr.net/npm/@deck.gl/widgets@~9.3.*/dist/stylesheet.css />
+    <style>
+    body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+#deck-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+#deck-container canvas {
+  z-index: 1;
+  background: none;
+}
+
+#deck-container .error_text {
+  color: red;
+  background: none;
+  position: absolute;
+  z-index: 100;
+}
+    </style>
+  </head>
+  <body>
+    <div id="deck-container">
+    </div>
+  </body>
+  <script>
+    const container = document.getElementById('deck-container');
+    const jsonInput = {
+  "initialViewState": {
+    "bearing": 20,
+    "latitude": 45.39642216428919,
+    "longitude": 9.206622782723082,
+    "pitch": 55,
+    "zoom": 16
+  },
+  "layers": [
+    {
+      "@@type": "ColumnLayer",
+      "autoHighlight": true,
+      "data": [
+        {
+          "altezza": 250.0,
+          "colore": [
+            128,
+            0,
+            38,
+            200
+          ],
+          "congestione_max": 1.0,
+          "congestione_txt": "1.0",
+          "lat_r": 45.39854,
+          "lon_r": 9.21066,
+          "n_letture": 25,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 250.0,
+          "colore": [
+            128,
+            0,
+            38,
+            200
+          ],
+          "congestione_max": 1.0,
+          "congestione_txt": "1.0",
+          "lat_r": 45.39805,
+          "lon_r": 9.20704,
+          "n_letture": 36,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 234.50000025331974,
+          "colore": [
+            156,
+            0,
+            38,
+            200
+          ],
+          "congestione_max": 0.938000001013279,
+          "congestione_txt": "0.94",
+          "lat_r": 45.39832,
+          "lon_r": 9.20987,
+          "n_letture": 25,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 230.7500001043081,
+          "colore": [
+            164,
+            0,
+            38,
+            200
+          ],
+          "congestione_max": 0.9230000004172324,
+          "congestione_txt": "0.92",
+          "lat_r": 45.39802,
+          "lon_r": 9.20755,
+          "n_letture": 35,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 230.7500001043081,
+          "colore": [
+            164,
+            0,
+            38,
+            200
+          ],
+          "congestione_max": 0.9230000004172324,
+          "congestione_txt": "0.92",
+          "lat_r": 45.39797,
+          "lon_r": 9.20704,
+          "n_letture": 38,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 228.2500006258488,
+          "colore": [
+            170,
+            0,
+            38,
+            200
+          ],
+          "congestione_max": 0.9130000025033952,
+          "congestione_txt": "0.91",
+          "lat_r": 45.39781,
+          "lon_r": 9.20407,
+          "n_letture": 9,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 228.2500006258488,
+          "colore": [
+            170,
+            0,
+            38,
+            200
+          ],
+          "congestione_max": 0.9130000025033952,
+          "congestione_txt": "0.91",
+          "lat_r": 45.39795,
+          "lon_r": 9.20595,
+          "n_letture": 36,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 222.7500006556511,
+          "colore": [
+            179,
+            0,
+            38,
+            200
+          ],
+          "congestione_max": 0.8910000026226044,
+          "congestione_txt": "0.89",
+          "lat_r": 45.39815,
+          "lon_r": 9.20792,
+          "n_letture": 5,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 221.00000083446503,
+          "colore": [
+            183,
+            0,
+            38,
+            200
+          ],
+          "congestione_max": 0.8840000033378601,
+          "congestione_txt": "0.88",
+          "lat_r": 45.39787,
+          "lon_r": 9.205,
+          "n_letture": 6,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 221.00000083446503,
+          "colore": [
+            183,
+            0,
+            38,
+            200
+          ],
+          "congestione_max": 0.8840000033378601,
+          "congestione_txt": "0.88",
+          "lat_r": 45.39847,
+          "lon_r": 9.21015,
+          "n_letture": 5,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 216.2499986588955,
+          "colore": [
+            191,
+            1,
+            37,
+            200
+          ],
+          "congestione_max": 0.864999994635582,
+          "congestione_txt": "0.86",
+          "lat_r": 45.39773,
+          "lon_r": 9.20228,
+          "n_letture": 9,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 186.75000220537186,
+          "colore": [
+            227,
+            26,
+            28,
+            200
+          ],
+          "congestione_max": 0.7470000088214874,
+          "congestione_txt": "0.75",
+          "lat_r": 45.39784,
+          "lon_r": 9.21037,
+          "n_letture": 8,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 172.49999940395355,
+          "colore": [
+            238,
+            50,
+            34,
+            200
+          ],
+          "congestione_max": 0.6899999976158142,
+          "congestione_txt": "0.69",
+          "lat_r": 45.39762,
+          "lon_r": 9.1999,
+          "n_letture": 5,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 160.99999845027924,
+          "colore": [
+            248,
+            70,
+            39,
+            200
+          ],
+          "congestione_max": 0.6439999938011169,
+          "congestione_txt": "0.64",
+          "lat_r": 45.39771,
+          "lon_r": 9.20045,
+          "n_letture": 8,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 121.99999392032622,
+          "colore": [
+            253,
+            145,
+            61,
+            200
+          ],
+          "congestione_max": 0.4879999756813049,
+          "congestione_txt": "0.49",
+          "lat_r": 45.39774,
+          "lon_r": 9.20788,
+          "n_letture": 8,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 76.00000500679015,
+          "colore": [
+            254,
+            200,
+            100,
+            200
+          ],
+          "congestione_max": 0.3040000200271606,
+          "congestione_txt": "0.3",
+          "lat_r": 45.39939,
+          "lon_r": 9.20865,
+          "n_letture": 66,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 70.74999809265135,
+          "colore": [
+            254,
+            206,
+            107,
+            200
+          ],
+          "congestione_max": 0.2829999923706054,
+          "congestione_txt": "0.28",
+          "lat_r": 45.39854,
+          "lon_r": 9.20983,
+          "n_letture": 29,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 70.74999809265135,
+          "colore": [
+            254,
+            206,
+            107,
+            200
+          ],
+          "congestione_max": 0.2829999923706054,
+          "congestione_txt": "0.28",
+          "lat_r": 45.39808,
+          "lon_r": 9.20614,
+          "n_letture": 10,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 69.74999606609344,
+          "colore": [
+            254,
+            208,
+            108,
+            200
+          ],
+          "congestione_max": 0.2789999842643738,
+          "congestione_txt": "0.28",
+          "lat_r": 45.39941,
+          "lon_r": 9.20837,
+          "n_letture": 47,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 66.4999932050705,
+          "colore": [
+            254,
+            211,
+            112,
+            200
+          ],
+          "congestione_max": 0.265999972820282,
+          "congestione_txt": "0.27",
+          "lat_r": 45.39833,
+          "lon_r": 9.20784,
+          "n_letture": 5,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 66.4999932050705,
+          "colore": [
+            254,
+            211,
+            112,
+            200
+          ],
+          "congestione_max": 0.265999972820282,
+          "congestione_txt": "0.27",
+          "lat_r": 45.39827,
+          "lon_r": 9.20742,
+          "n_letture": 38,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 55.25000393390655,
+          "colore": [
+            254,
+            221,
+            128,
+            200
+          ],
+          "congestione_max": 0.2210000157356262,
+          "congestione_txt": "0.22",
+          "lat_r": 45.39785,
+          "lon_r": 9.20106,
+          "n_letture": 15,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 47.9999929666519,
+          "colore": [
+            254,
+            226,
+            137,
+            200
+          ],
+          "congestione_max": 0.1919999718666076,
+          "congestione_txt": "0.19",
+          "lat_r": 45.3995,
+          "lon_r": 9.20839,
+          "n_letture": 6,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 34.749999642372124,
+          "colore": [
+            254,
+            235,
+            155,
+            200
+          ],
+          "congestione_max": 0.1389999985694885,
+          "congestione_txt": "0.14",
+          "lat_r": 45.39891,
+          "lon_r": 9.21289,
+          "n_letture": 94,
+          "road_type": "Connecting road"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.39582,
+          "lon_r": 9.21161,
+          "n_letture": 75,
+          "road_type": "Minor local road"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.39582,
+          "lon_r": 9.21165,
+          "n_letture": 5,
+          "road_type": "Minor local road"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.39595,
+          "lon_r": 9.21155,
+          "n_letture": 5,
+          "road_type": "Minor local road"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.39687,
+          "lon_r": 9.21101,
+          "n_letture": 7,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.3978,
+          "lon_r": 9.20106,
+          "n_letture": 45,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.39778,
+          "lon_r": 9.20077,
+          "n_letture": 7,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.39693,
+          "lon_r": 9.21107,
+          "n_letture": 19,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.39787,
+          "lon_r": 9.20156,
+          "n_letture": 6,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.39842,
+          "lon_r": 9.20937,
+          "n_letture": 5,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.39805,
+          "lon_r": 9.20715,
+          "n_letture": 56,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.39848,
+          "lon_r": 9.20943,
+          "n_letture": 7,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.39854,
+          "lon_r": 9.21023,
+          "n_letture": 6,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.39851,
+          "lon_r": 9.21,
+          "n_letture": 40,
+          "road_type": "Motorway"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.40224,
+          "lon_r": 9.20901,
+          "n_letture": 5,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.40229,
+          "lon_r": 9.20913,
+          "n_letture": 21,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.40288,
+          "lon_r": 9.20923,
+          "n_letture": 9,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.4036,
+          "lon_r": 9.20953,
+          "n_letture": 8,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.40362,
+          "lon_r": 9.20932,
+          "n_letture": 7,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.40384,
+          "lon_r": 9.20947,
+          "n_letture": 25,
+          "road_type": "Secondary road"
+        },
+        {
+          "altezza": 0.0,
+          "colore": [
+            255,
+            255,
+            204,
+            200
+          ],
+          "congestione_max": 0.0,
+          "congestione_txt": "0.0",
+          "lat_r": 45.40395,
+          "lon_r": 9.20949,
+          "n_letture": 6,
+          "road_type": "Secondary road"
+        }
+      ],
+      "elevationScale": 1,
+      "getElevation": "@@=altezza",
+      "getFillColor": "@@=colore",
+      "getPosition": "@@=[lon_r, lat_r]",
+      "id": "c02f5a57-c45d-4cbb-8195-250cb1bb2f97",
+      "pickable": true,
+      "radius": 12
+    }
+  ],
+  "mapProvider": "carto",
+  "mapStyle": "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+  "views": [
+    {
+      "@@type": "MapView",
+      "controller": true
+    }
+  ]
+};
+    const tooltip = {'text': '{road_type}\ncongestione massima: {congestione_txt}\nletture: {n_letture}'};
+    const customLibraries = null;
+    const configuration = null;
+
+    const deckInstance = createDeck({
+                  container,
+      jsonInput,
+      tooltip,
+      customLibraries,
+      configuration,
+          });
+
+  </script>
+</html>
